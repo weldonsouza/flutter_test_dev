@@ -27,6 +27,48 @@ onMSG(scaffoldKey, msg) {
   ));
 }
 
+String validateEmail(email) {
+  String pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+  RegExp regExp = new RegExp(pattern);
+  if (email.length == 0) {
+    return null;
+  } else if(!regExp.hasMatch(email)){
+    return "Email inválido";
+  } else {
+    return null;
+  }
+}
+
+String validatePassword(password) {
+  if (password.isEmpty) {
+    return null;
+  } else if(password.length < 8){
+    return 'Sua senha deve ter mais de 8 caracteres.';
+  }
+
+  return null;
+}
+
+String validateTitle(value) {
+  if (value.isEmpty) {
+    return null;
+  } else if(value.length < 3){
+    return 'Seu titulo deve ter mais de 3 caracteres.';
+  }
+
+  return null;
+}
+
+String validateDescription(value) {
+  if (value.isEmpty) {
+    return null;
+  } else if(value.length < 5){
+    return 'Seu descrição deve ter mais de 5 caracteres.';
+  }
+
+  return null;
+}
+
 ///------------------------ Função de requisições globais ----------------------
 //Função gernerica de requisições
 makeRequest(url, type, {context, body, headers}) async {
@@ -58,20 +100,4 @@ makeRequest(url, type, {context, body, headers}) async {
   } on SocketException catch (_) {
     return null;
   }
-}
-
-///--------------------- Função para salvar dados no SQLite --------------------
-
-///----------------------------- Provider Global -------------------------------
-class GlobalProviderController with ChangeNotifier {
-/*  //Variáveis utilizadas no Provider
-  String _email;
-
-  getControllerEmail() => _email;
-
-  //Receber dados do email
-  changeEmail(String value) {
-    _email = value;
-    notifyListeners();
-  }*/
 }
