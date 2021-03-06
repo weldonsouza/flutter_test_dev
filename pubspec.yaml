@@ -65,4 +65,4 @@ flutter:
         - asset: assets/fonts/Raleway/Raleway-Thin.TTF
         - asset: assets/fonts/Raleway/Raleway-ThinItalic.TTF
   assets:
-    - assets/icon/
+    - assets/
