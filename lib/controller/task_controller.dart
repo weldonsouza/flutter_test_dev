@@ -14,31 +14,64 @@ final FocusNode descriptionFocusTask = FocusNode();
 
 var idTask;
 
-saveDataTask() async {
-  if (formKeyTask.currentState.validate()) {
+//Atualizar tarefa
+updateDataTask(context, idTask) async {
+  if (titleControllerTask.text.isNotEmpty &&
+      descriptionControllerTask.text.isNotEmpty) {
+    //Converter o formato da data
     if (dateSelected != null) {
       dateFormatTask = '${DateFormat('dd/MM/yyyy').format(dateSelected)}';
     } else {
       dateFormatTask = '$dataIni';
     }
 
-    //Salvar dados no sqlite
-    var dataSave = await dbBase.updateBaseDB(
+    //Atualizar dados no sqlite
+    var dataUpdate = await dbBase.updateBaseDB(
       BaseModel(
-          id: idTask,
-          title: titleControllerTask.text,
-          description: descriptionControllerTask.text,
-          date: dateFormatTask,
+        id: int.parse(idTask),
+        title: titleControllerTask.text,
+        description: descriptionControllerTask.text,
+        date: dateFormatTask,
+        maker: userMaker,
       ),
     );
 
-    print(dataSave);
-    if (dataSave > 0) {
+    if (dataUpdate > 0) {
+      onMSG(
+        scaffoldKeyTask,
+        '${descriptionControllerTask.text} alterado com sucesso!',
+      );
+
       idTask = '';
       titleControllerTask.text = '';
       descriptionControllerTask.text = '';
+
+      Future.delayed(Duration(milliseconds: 1000), () {
+        Navigator.of(context).pop();
+      });
     }
   } else {
-    onMSG(scaffoldKeyTask , 'Campos obrigatórios!');
+    onMSG(scaffoldKeyTask, 'Campos obrigatórios!');
+  }
+}
+
+//Deletar terefa
+deleteTask(context, idTask) async {
+  if (titleControllerTask.text.isNotEmpty &&
+      descriptionControllerTask.text.isNotEmpty) {
+    //Exluir a tarefa
+    var dataDelete = await dbBase.deleteBaseDB(idTask);
+
+    if (dataDelete == 1) {
+      titleControllerTask.text = '';
+      descriptionControllerTask.text = '';
+
+      onMSG(scaffoldKeyTask,
+          '${descriptionControllerTask.text} excluido com sucesso!');
+
+      Future.delayed(Duration(milliseconds: 1000), () {
+        Navigator.of(context).pop();
+      });
+    }
   }
 }
