@@ -1,4 +1,4 @@
-# Teste Dev Flutter
+# Flutter Dev
 
 Link para instalação do flutter [`Install - Flutter`](https://flutter.dev/docs/get-started/install).
 
