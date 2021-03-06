@@ -18,7 +18,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    streamController.add(null);
+    streamJsonController.add(null);
     getListTaskDB();
+    getJson();
   }
 
   @override
@@ -38,32 +41,167 @@ class _HomePageState extends State<HomePage> {
         child: Icon(Icons.add),
         backgroundColor: colorDark,
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 2),
-        child: SingleChildScrollView(
-          child: StreamBuilder(
-            stream: streamController.stream,
-            builder: (context, snapshot){
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                  return Container();
-                case ConnectionState.active:
-                  Widget widget;
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            StreamBuilder(
+              stream: streamController.stream,
+              builder: (context, snapshot){
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                    return Container();
+                  case ConnectionState.active:
+                    Widget widget;
 
-                  if(snapshot.data != null){
-                    widget = Column(
-                      children: _listCard(snapshot.data),
+                    if(snapshot.data != null){
+                      widget = Container(
+                        padding: EdgeInsets.only(
+                          top: 10,
+                        ),
+                        child: Column(
+                          children: _listCard(snapshot.data),
+                        ),
+                      );
+                    } else {
+                      widget = Padding(
+                        padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                        child: Card(
+                          color: Colors.white,
+                          child: Padding(
+                            padding: EdgeInsets.all(20.0),
+                            child: Container(
+                              width: mediaQuery(context, 1),
+                              child: RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: mediaQuery(context, 0.04),
+                                      fontWeight: FontWeight.bold),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: 'Não há tarefas salvas',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    return widget;
+                  default:
+                    return Padding(
+                      padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                      child: Card(
+                        color: Colors.white,
+                        child: Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Container(
+                            width: mediaQuery(context, 1),
+                            child: RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: mediaQuery(context, 0.04),
+                                    fontWeight: FontWeight.bold),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: 'Não há tarefas salvas',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     );
-                  } else {
-                    widget = Container();
-                  }
+                }
+              },
+            ),
+            StreamBuilder(
+              stream: streamJsonController.stream,
+              builder: (context, snapshot){
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                    return Container();
+                  case ConnectionState.active:
+                    Widget widget;
 
-                  return widget;
-                default:
-                  return Container();
-              }
-            },
-          ),
+                    if(snapshot.data != null){
+                      widget = Container(
+                        padding: EdgeInsets.only(
+                          top: 10,
+                        ),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Divider(
+                                      color: colorDark,
+                                      height: 15,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 10),
+                                    child: Container(
+                                      child: Text(
+                                        'Lista da API "TODOS"',
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: mediaQuery(context, 0.04),
+                                          color: colorDark,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Divider(
+                                      color: colorDark,
+                                      height: 15,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Column(
+                              children: _listJson(snapshot.data),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      widget = Container();
+                    }
+
+                    return widget;
+                  default:
+                    return Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            colorDark,
+                          ),
+                        ),
+                      ),
+                    );
+                }
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -74,15 +212,20 @@ class _HomePageState extends State<HomePage> {
 
     for (int i = 0; i < snapshot.length; i++) {
       returnData.add(
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              CupertinoPageRoute(builder: (context) => TaskList()),
-            );
-          },
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(builder: (context) => TaskList(
+                  id: snapshot[i]['id'],
+                  title: snapshot[i]['title'],
+                  description: snapshot[i]['description'],
+                  date: snapshot[i]['date'],
+                ))
+              );
+            },
             child: Card(
               color: Colors.white,
               child: Padding(
@@ -96,23 +239,21 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Container(
                           width: mediaQuery(context, 0.5),
-                          child: Flexible(
-                            child: RichText(
-                              textAlign: TextAlign.start,
-                              text: TextSpan(
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: mediaQuery(context, 0.04),
-                                    fontWeight: FontWeight.bold),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text: '${snapshot[i]['id']} - ${snapshot[i]['title']}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                          child: RichText(
+                            textAlign: TextAlign.start,
+                            text: TextSpan(
+                              style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: mediaQuery(context, 0.04),
+                                  fontWeight: FontWeight.bold),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: '${snapshot[i]['id']} - ${snapshot[i]['title']}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -144,6 +285,59 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return returnData;
+  }
+
+  _listJson(snapshot) {
+    List<Widget> returnData = [];
+
+    for (int i = 0; i < snapshot.length; i++) {
+      returnData.add(
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: Card(
+            color: Colors.white,
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    width: mediaQuery(context, 1),
+                    child: RichText(
+                      textAlign: TextAlign.start,
+                      text: TextSpan(
+                        style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: mediaQuery(context, 0.04),
+                            fontWeight: FontWeight.bold),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: '${snapshot[i].id} - ${snapshot[i].title}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Divider(color: colorDark),
+                  Text(
+                    'Completado: ${snapshot[i].completed}',
+                    style: TextStyle(
+                      fontSize: mediaQuery(context, 0.035),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
