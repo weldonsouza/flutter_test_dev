@@ -14,6 +14,7 @@ class DBHelperBase {
   static const String title = 'title';
   static const String description = 'description';
   static const String date = 'date';
+  static const String maker = 'maker';
   static const String TABLEBASE = 'BaseHelper';
 
   Future<Database> get db async {
@@ -33,7 +34,7 @@ class DBHelperBase {
 
   _onCreate(Database db, int version) async {
     await db.execute("CREATE TABLE $TABLEBASE (id INTEGER PRIMARY KEY, "
-        "$title TEXT, $description TEXT, $date TEXT)");
+        "$title TEXT, $description TEXT, $date TEXT, $maker TEXT)");
   }
 
   Future<int> saveBaseDB(BaseModel baseHelper) async {
@@ -48,34 +49,35 @@ class DBHelperBase {
   Future<int> updateBaseDB(BaseModel baseHelper) async {
     var dbClient = await db;
 
-    int collectUpdate = await dbClient.rawUpdate(
-          'UPDATE $TABLEBASE SET $title = ?, $description = ?, $date = ? '
-              'WHERE id = ${baseHelper.id}',
-        [
-          baseHelper.id,
-          baseHelper.title,
-          baseHelper.description,
-          baseHelper.date,
-        ],
+    int baseUpdate = await dbClient.rawUpdate(
+      'UPDATE $TABLEBASE SET $title = ?, $description = ?, $date = ? '
+      'WHERE id = ${baseHelper.id}',
+      [
+        baseHelper.title,
+        baseHelper.description,
+        baseHelper.date,
+      ],
     );
 
     getBaseDB();
 
-    return collectUpdate;
+    return baseUpdate;
   }
 
   Future<dynamic> getBaseDB() async {
     var dbClient = await db;
 
     List<Map> maps = await dbClient.query(
-      TABLEBASE,
-      columns: [
-        'id',
-        title,
-        description,
-        date,
-      ],
-    );
+        TABLEBASE,
+        columns: [
+          'id',
+          title,
+          description,
+          date,
+          maker,
+        ],
+        where: 'maker = ?',
+        whereArgs: [userMaker]);
 
     List<dynamic> dataDB = [];
 
@@ -90,13 +92,10 @@ class DBHelperBase {
     return dataDB;
   }
 
-  Future<void> deleteBaseDB(int id) async {
+  Future deleteBaseDB(int id) async {
     var dbClient = await db;
-    int res = await dbClient.delete(
-        TABLEBASE,
-        where: 'id = ?',
-        whereArgs: [id]
-    );
+    int res =
+        await dbClient.delete(TABLEBASE, where: 'id = ?', whereArgs: [id]);
 
     getBaseDB();
 
