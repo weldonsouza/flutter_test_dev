@@ -4,12 +4,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test_dev/data/db_helper_base.dart';
+import 'package:flutter_test_dev/model/json_placeholder.dart';
 import 'package:intl/intl.dart';
 
 //******************  CONSTANTES GLOBAIS  **********************
 const String app = 'PRICING';
 
-const String baseUrl = 'http://172.40.1.7:7904/rest/';
+const String baseUrl = 'https://jsonplaceholder.typicode.com/todos';
 
 enum typeRequest {
   GET,
@@ -27,8 +28,11 @@ enum connectivityStatus {
 //******************  VARIÁVEIS GLOBAIS  ********************
 var dbBase = DBHelperBase();
 
+var userMaker;
+
 final streamConnection = StreamController.broadcast();
 final streamController = StreamController.broadcast();
+final streamJsonController = StreamController.broadcast();
 final streamIsLoadingLogin = StreamController<bool>.broadcast();
 
 var colorLight = Colors.blueGrey[50];

@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 import 'package:flutter_test_dev/utils/globals.dart';
 
 ///------------------------------ Funções gerais -------------------------------
@@ -77,18 +76,18 @@ makeRequest(url, type, {context, body, headers}) async {
   try {
     switch (type) {
       case typeRequest.GET:
-        response = await http.get('$baseUrl$url').timeout(Duration(seconds: 5));
+        response = await http.get(url).timeout(Duration(seconds: 5));
         break;
       case typeRequest.POST:
         response = await http
-            .post('$baseUrl$url', body: body)
+            .post(url, body: body)
             .timeout(Duration(seconds: 5));
         break;
       case typeRequest.PUT:
-        response = await http.put('$baseUrl$url').timeout(Duration(seconds: 5));
+        response = await http.put(url).timeout(Duration(seconds: 5));
         break;
       case typeRequest.DELETE:
-        response = await http.put('$baseUrl$url').timeout(Duration(seconds: 5));
+        response = await http.put(url).timeout(Duration(seconds: 5));
         break;
     }
 
