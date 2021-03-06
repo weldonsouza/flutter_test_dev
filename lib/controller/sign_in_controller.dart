@@ -39,6 +39,8 @@ _signInWithEmailAndPassword(context) async {
     streamIsLoadingLogin.sink.add(false);
 
     if (user != null) {
+      userMaker = user.uid;
+
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
