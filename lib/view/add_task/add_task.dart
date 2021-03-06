@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test_dev/components/custom_appbar.dart';
+import 'package:flutter_test_dev/components/custom_text_field.dart';
 import 'package:flutter_test_dev/controller/add_task_controller.dart';
 import 'package:flutter_test_dev/controller/global_functions.dart';
 import 'package:flutter_test_dev/utils/globals.dart';
@@ -62,88 +63,32 @@ class _AddTaskState extends State<AddTask> {
         child: Form(
           key: formKeyAddTask,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: mediaQuery(context, 1),
-                margin: EdgeInsets.only(
-                  top: 16,
-                  left: 16,
-                  right: 16,
-                  bottom: 5,
-                ),
-                child: TextFormField(
-                  controller: titleControllerAddTask,
-                  keyboardType: TextInputType.text,
-                  textInputAction: TextInputAction.next,
-                  focusNode: titleFocusAddTask,
-                  validator: validateTitle,
-                  autovalidate: true,
-                  onFieldSubmitted: (value) {
-                    FocusScope.of(context).requestFocus(descriptionFocusAddTask);
-                  },
-                  cursorColor: colorDark,
-                  style: TextStyle(
-                    color: colorDark,
-                  ),
-                  decoration: InputDecoration(
-                    counterText: '',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: colorDark.withOpacity(0.4),
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: colorDark.withOpacity(0.4),
-                      ),
-                    ),
-                    labelText: 'Titulo',
-                    labelStyle: TextStyle(
-                      color: colorDark,
-                    ),
-                  ),
-                ),
+              CustomTextField(
+                labelText: 'Titulo',
+                //height: 50,
+                marginTop: 16,
+                marginBottom: 5,
+                controller: titleControllerAddTask,
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
+                focusNode: titleFocusAddTask,
+                focusScope: descriptionFocusAddTask,
+                validate: validateTitle,
+                colorBord: colorDark.withOpacity(0.4),
               ),
-              Container(
-                width: mediaQuery(context, 1),
-                margin: EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  bottom: 5,
-                ),
-                child: TextFormField(
-                  controller: descriptionControllerAddTask,
-                  keyboardType: TextInputType.text,
-                  textInputAction: TextInputAction.done,
-                  focusNode: descriptionFocusAddTask,
-                  validator: validateDescription,
-                  autovalidate: true,
-                  onFieldSubmitted: (value) {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  },
-                  cursorColor: colorDark,
-                  style: TextStyle(
-                    color: colorDark,
-                  ),
-                  maxLines: 5,
-                  decoration: InputDecoration(
-                    counterText: '',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: colorDark.withOpacity(0.4),
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: colorDark.withOpacity(0.4),
-                      ),
-                    ),
-                    labelText: 'Descrição',
-                    labelStyle: TextStyle(
-                      color: colorDark,
-                    ),
-                  ),
-                ),
+              CustomTextField(
+                labelText: 'Descrição',
+                marginBottom: 5,
+                marginTop: 0,
+                controller: descriptionControllerAddTask,
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.done,
+                focusNode: descriptionFocusAddTask,
+                validate: validateDescription,
+                maxLines: 5,
+                colorBord: colorDark.withOpacity(0.4),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(
@@ -198,8 +143,8 @@ class _AddTaskState extends State<AddTask> {
     dateSelected = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime.now().subtract(Duration(days: 30)),
-      lastDate: DateTime.now().add(Duration(days: 10)),
+      firstDate: DateTime(2019),
+      lastDate: DateTime(2050),
       builder: (BuildContext context, Widget child) {
         return Theme(
           data: ThemeData(

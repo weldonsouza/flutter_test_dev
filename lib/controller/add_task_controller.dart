@@ -7,13 +7,16 @@ import 'package:intl/intl.dart';
 final formKeyAddTask = GlobalKey<FormState>();
 final scaffoldKeyAddTask = GlobalKey<ScaffoldState>();
 final TextEditingController titleControllerAddTask = TextEditingController();
-final TextEditingController descriptionControllerAddTask = TextEditingController();
+final TextEditingController descriptionControllerAddTask =
+    TextEditingController();
 
 final FocusNode titleFocusAddTask = FocusNode();
 final FocusNode descriptionFocusAddTask = FocusNode();
 
 saveDataAddTask() async {
   if (formKeyAddTask.currentState.validate()) {
+
+    //Converter o formato da data
     if (dateSelected != null) {
       dateFormatTask = '${DateFormat('dd/MM/yyyy').format(dateSelected)}';
     } else {
@@ -23,17 +26,23 @@ saveDataAddTask() async {
     //Salvar dados no sqlite
     var dataSave = await dbBase.saveBaseDB(
       BaseModel(
-          title: titleControllerAddTask.text,
-          description: descriptionControllerAddTask.text,
-          date: dateFormatTask),
+        title: titleControllerAddTask.text,
+        description: descriptionControllerAddTask.text,
+        date: dateFormatTask,
+        maker: userMaker,
+      ),
     );
 
-    print(dataSave);
     if (dataSave > 0) {
+      onMSG(
+        scaffoldKeyAddTask,
+        '${titleControllerAddTask.text} tarefa salva com sucesso!',
+      );
+
       titleControllerAddTask.text = '';
       descriptionControllerAddTask.text = '';
     }
   } else {
-    onMSG(scaffoldKeyAddTask , 'Campos obrigatórios!');
+    onMSG(scaffoldKeyAddTask, 'Campos obrigatórios!');
   }
 }
