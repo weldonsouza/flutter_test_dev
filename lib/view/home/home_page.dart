@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test_dev/components/custom_appbar.dart';
 import 'package:flutter_test_dev/controller/global_functions.dart';
 import 'package:flutter_test_dev/controller/home_controller.dart';
+import 'package:flutter_test_dev/controller/network_test_connectivity.dart';
 import 'package:flutter_test_dev/utils/globals.dart';
 import 'package:flutter_test_dev/view/add_task/add_task.dart';
 import 'package:flutter_test_dev/view/task_list/task_list.dart';
@@ -26,184 +27,191 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(50.0),
-        child: CustomAppBar('Tarefas'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            CupertinoPageRoute(builder: (context) => AddTask()),
-          );
-        },
-        child: Icon(Icons.add),
-        backgroundColor: colorDark,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            StreamBuilder(
-              stream: streamController.stream,
-              builder: (context, snapshot){
-                switch (snapshot.connectionState) {
-                  case ConnectionState.none:
-                    return Container();
-                  case ConnectionState.active:
-                    Widget widget;
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(50.0),
+            child: CustomAppBar('Tarefas'),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(builder: (context) => AddTask()),
+              );
+            },
+            child: Icon(Icons.add),
+            backgroundColor: colorDark,
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                StreamBuilder(
+                  stream: streamController.stream,
+                  builder: (context, snapshot){
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.none:
+                        return Container();
+                      case ConnectionState.active:
+                        Widget widget;
 
-                    if(snapshot.data != null){
-                      widget = Container(
-                        padding: EdgeInsets.only(
-                          top: 10,
-                        ),
-                        child: Column(
-                          children: _listCard(snapshot.data),
-                        ),
-                      );
-                    } else {
-                      widget = Padding(
-                        padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-                        child: Card(
-                          color: Colors.white,
-                          child: Padding(
-                            padding: EdgeInsets.all(20.0),
-                            child: Container(
-                              width: mediaQuery(context, 1),
-                              child: RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  style: TextStyle(
-                                      color: Colors.black87,
-                                      fontSize: mediaQuery(context, 0.04),
-                                      fontWeight: FontWeight.bold),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: 'Não há tarefas salvas',
+                        if(snapshot.data != null){
+                          widget = Container(
+                            padding: EdgeInsets.only(
+                              top: 10,
+                            ),
+                            child: Column(
+                              children: _listCard(snapshot.data),
+                            ),
+                          );
+                        } else {
+                          widget = Padding(
+                            padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                            child: Card(
+                              color: Colors.white,
+                              child: Padding(
+                                padding: EdgeInsets.all(20.0),
+                                child: Container(
+                                  width: mediaQuery(context, 1),
+                                  child: RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
                                       style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                          color: Colors.black87,
+                                          fontSize: mediaQuery(context, 0.04),
+                                          fontWeight: FontWeight.bold),
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                          text: 'Não há tarefas salvas',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+
+                        return widget;
+                      default:
+                        return Padding(
+                          padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                          child: Card(
+                            color: Colors.white,
+                            child: Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child: Container(
+                                width: mediaQuery(context, 1),
+                                child: RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: mediaQuery(context, 0.04),
+                                        fontWeight: FontWeight.bold),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: 'Não há tarefas salvas',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      );
+                        );
                     }
+                  },
+                ),
+                StreamBuilder(
+                  stream: streamJsonController.stream,
+                  builder: (context, snapshot){
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.none:
+                        return Container();
+                      case ConnectionState.active:
+                        Widget widget;
 
-                    return widget;
-                  default:
-                    return Padding(
-                      padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-                      child: Card(
-                        color: Colors.white,
-                        child: Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Container(
-                            width: mediaQuery(context, 1),
-                            child: RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: mediaQuery(context, 0.04),
-                                    fontWeight: FontWeight.bold),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text: 'Não há tarefas salvas',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                        if(snapshot.data != null){
+                          widget = Container(
+                            padding: EdgeInsets.only(
+                              top: 10,
                             ),
-                          ),
-                        ),
-                      ),
-                    );
-                }
-              },
-            ),
-            StreamBuilder(
-              stream: streamJsonController.stream,
-              builder: (context, snapshot){
-                switch (snapshot.connectionState) {
-                  case ConnectionState.none:
-                    return Container();
-                  case ConnectionState.active:
-                    Widget widget;
-
-                    if(snapshot.data != null){
-                      widget = Container(
-                        padding: EdgeInsets.only(
-                          top: 10,
-                        ),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                              child: Row(
-                                children: <Widget>[
-                                  Expanded(
-                                    child: Divider(
-                                      color: colorDark,
-                                      height: 15,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 10),
-                                    child: Container(
-                                      child: Text(
-                                        'Lista da API "TODOS"',
-                                        textAlign: TextAlign.right,
-                                        style: TextStyle(
-                                          fontSize: mediaQuery(context, 0.04),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Divider(
                                           color: colorDark,
+                                          height: 15,
                                         ),
                                       ),
-                                    ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 10),
+                                        child: Container(
+                                          child: Text(
+                                            'Lista da API "TODOS"',
+                                            textAlign: TextAlign.right,
+                                            style: TextStyle(
+                                              fontSize: mediaQuery(context, 0.04),
+                                              color: colorDark,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Divider(
+                                          color: colorDark,
+                                          height: 15,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Expanded(
-                                    child: Divider(
-                                      color: colorDark,
-                                      height: 15,
-                                    ),
-                                  ),
-                                ],
+                                ),
+                                Column(
+                                  children: _listJson(snapshot.data),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else {
+                          widget = Container();
+                        }
+
+                        return widget;
+                      default:
+                        return Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(10),
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                colorDark,
                               ),
                             ),
-                            Column(
-                              children: _listJson(snapshot.data),
-                            ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      widget = Container();
-                    }
-
-                    return widget;
-                  default:
-                    return Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(10),
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            colorDark,
                           ),
-                        ),
-                      ),
-                    );
-                }
-              },
+                        );
+                    }
+                  },
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
+
+        //Barra de informando se tem internet
+        NetworkTestConnectivity(),
+      ],
     );
   }
 

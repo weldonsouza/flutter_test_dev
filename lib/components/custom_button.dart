@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test_dev/controller/global_functions.dart';
+import 'package:flutter_test_dev/controller/register_controller.dart';
 
 // ignore: must_be_immutable
 class CustomButton extends StatefulWidget {
@@ -45,6 +46,8 @@ class _CustomButtonState extends State<CustomButton> {
                   CupertinoPageRoute(builder: (context) => widget.widgetRoute),
                 );
               } else {
+                emailControllerRegister.text = '';
+                passwordControllerRegister.text = '';
                 Navigator.of(context).pop();
               }
             },

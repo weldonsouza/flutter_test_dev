@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test_dev/components/custom_appbar.dart';
 import 'package:flutter_test_dev/components/custom_text_field.dart';
 import 'package:flutter_test_dev/controller/global_functions.dart';
+import 'package:flutter_test_dev/controller/network_test_connectivity.dart';
 import 'package:flutter_test_dev/controller/task_controller.dart';
 import 'package:flutter_test_dev/utils/globals.dart';
 import 'package:intl/intl.dart';
@@ -59,111 +60,118 @@ class _TaskListState extends State<TaskList> {
             ),
     );
 
-    return Scaffold(
-      key: scaffoldKeyTask,
-      resizeToAvoidBottomInset: false,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(50.0),
-        child: CustomAppBar('Tarefa'),
-      ),
-      body: Form(
-        key: formKeyTask,
-        child: Stack(
-          children: [
-            Positioned(
-              child: Align(
-                alignment: FractionalOffset.bottomRight,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 16),
-                      child: _button('Editar', Colors.green),
+    return Stack(
+      children: [
+        Scaffold(
+          key: scaffoldKeyTask,
+          resizeToAvoidBottomInset: false,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(50.0),
+            child: CustomAppBar('Tarefa'),
+          ),
+          body: Form(
+            key: formKeyTask,
+            child: Stack(
+              children: [
+                Positioned(
+                  child: Align(
+                    alignment: FractionalOffset.bottomRight,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(left: 16),
+                          child: _button('Editar', Colors.green),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(right: 16),
+                          child: _button('Excluir', Colors.red),
+                        ),
+                      ],
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(right: 16),
-                      child: _button('Excluir', Colors.red),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  CustomTextField(
-                    labelText: 'Titulo',
-                    marginTop: 16,
-                    marginBottom: 5,
-                    controller: titleControllerTask,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.next,
-                    focusNode: titleFocusTask,
-                    focusScope: descriptionFocusTask,
-                    validate: validateTitle,
-                    colorBord: colorDark.withOpacity(0.4),
-                  ),
-                  CustomTextField(
-                    labelText: 'Descrição',
-                    marginBottom: 5,
-                    marginTop: 0,
-                    controller: descriptionControllerTask,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.done,
-                    focusNode: descriptionFocusTask,
-                    validate: validateDescription,
-                    maxLines: 5,
-                    colorBord: colorDark.withOpacity(0.4),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: _showDateTimePicker,
-                          child: Container(
-                            width: mediaQuery(context, 1),
-                            height: 40,
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.only(
-                              top: 5,
-                              left: 10,
-                              right: 10,
-                              bottom: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(
-                                color: colorDark.withOpacity(0.4),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                dateFormatTask,
-                                Icon(
-                                  MdiIcons.calendar,
-                                  color: colorDark,
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      CustomTextField(
+                        labelText: 'Titulo',
+                        marginTop: 16,
+                        marginBottom: 5,
+                        controller: titleControllerTask,
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
+                        focusNode: titleFocusTask,
+                        focusScope: descriptionFocusTask,
+                        validate: validateTitle,
+                        colorBord: colorDark.withOpacity(0.4),
+                      ),
+                      CustomTextField(
+                        labelText: 'Descrição',
+                        marginBottom: 5,
+                        marginTop: 0,
+                        controller: descriptionControllerTask,
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.done,
+                        focusNode: descriptionFocusTask,
+                        validate: validateDescription,
+                        maxLines: 5,
+                        colorBord: colorDark.withOpacity(0.4),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(4)),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: _showDateTimePicker,
+                              child: Container(
+                                width: mediaQuery(context, 1),
+                                height: 40,
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.only(
+                                  top: 5,
+                                  left: 10,
+                                  right: 10,
+                                  bottom: 5,
                                 ),
-                              ],
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(
+                                    color: colorDark.withOpacity(0.4),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    dateFormatTask,
+                                    Icon(
+                                      MdiIcons.calendar,
+                                      color: colorDark,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
+
+        //Barra de informando se tem internet
+        NetworkTestConnectivity(),
+      ],
     );
   }
 

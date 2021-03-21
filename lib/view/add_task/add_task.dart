@@ -3,6 +3,7 @@ import 'package:flutter_test_dev/components/custom_appbar.dart';
 import 'package:flutter_test_dev/components/custom_text_field.dart';
 import 'package:flutter_test_dev/controller/add_task_controller.dart';
 import 'package:flutter_test_dev/controller/global_functions.dart';
+import 'package:flutter_test_dev/controller/network_test_connectivity.dart';
 import 'package:flutter_test_dev/utils/globals.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -48,93 +49,100 @@ class _AddTaskState extends State<AddTask> {
             ),
     );
 
-    return Scaffold(
-      key: scaffoldKeyAddTask,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(50.0),
-        child: CustomAppBar('Adicionar Tarefa'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: saveDataAddTask,
-        child: Icon(Icons.done),
-        backgroundColor: colorDark,
-      ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: formKeyAddTask,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CustomTextField(
-                labelText: 'Titulo',
-                //height: 50,
-                marginTop: 16,
-                marginBottom: 5,
-                controller: titleControllerAddTask,
-                keyboardType: TextInputType.text,
-                textInputAction: TextInputAction.next,
-                focusNode: titleFocusAddTask,
-                focusScope: descriptionFocusAddTask,
-                validate: validateTitle,
-                colorBord: colorDark.withOpacity(0.4),
-              ),
-              CustomTextField(
-                labelText: 'Descrição',
-                marginBottom: 5,
-                marginTop: 0,
-                controller: descriptionControllerAddTask,
-                keyboardType: TextInputType.text,
-                textInputAction: TextInputAction.done,
-                focusNode: descriptionFocusAddTask,
-                validate: validateDescription,
-                maxLines: 5,
-                colorBord: colorDark.withOpacity(0.4),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16,
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: _showDateTimePicker,
-                      child: Container(
-                        width: mediaQuery(context, 1),
-                        height: 40,
-                        alignment: Alignment.center,
-                        padding: EdgeInsets.only(
-                          top: 5,
-                          left: 10,
-                          right: 10,
-                          bottom: 5,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(
-                            color: colorDark.withOpacity(0.4),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            dateFormat,
-                            Icon(
-                              MdiIcons.calendar,
-                              color: colorDark,
+    return Stack(
+      children: [
+        Scaffold(
+          key: scaffoldKeyAddTask,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(50.0),
+            child: CustomAppBar('Adicionar Tarefa'),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: saveDataAddTask,
+            child: Icon(Icons.done),
+            backgroundColor: colorDark,
+          ),
+          body: SingleChildScrollView(
+            child: Form(
+              key: formKeyAddTask,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CustomTextField(
+                    labelText: 'Titulo',
+                    //height: 50,
+                    marginTop: 16,
+                    marginBottom: 5,
+                    controller: titleControllerAddTask,
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.next,
+                    focusNode: titleFocusAddTask,
+                    focusScope: descriptionFocusAddTask,
+                    validate: validateTitle,
+                    colorBord: colorDark.withOpacity(0.4),
+                  ),
+                  CustomTextField(
+                    labelText: 'Descrição',
+                    marginBottom: 5,
+                    marginTop: 0,
+                    controller: descriptionControllerAddTask,
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.done,
+                    focusNode: descriptionFocusAddTask,
+                    validate: validateDescription,
+                    maxLines: 5,
+                    colorBord: colorDark.withOpacity(0.4),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: _showDateTimePicker,
+                          child: Container(
+                            width: mediaQuery(context, 1),
+                            height: 40,
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.only(
+                              top: 5,
+                              left: 10,
+                              right: 10,
+                              bottom: 5,
                             ),
-                          ],
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(
+                                color: colorDark.withOpacity(0.4),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                dateFormat,
+                                Icon(
+                                  MdiIcons.calendar,
+                                  color: colorDark,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
+
+        //Barra de informando se tem internet
+        NetworkTestConnectivity(),
+      ],
     );
   }
 
