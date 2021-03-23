@@ -16,6 +16,23 @@ final TextEditingController passwordControllerLogin = TextEditingController();
 final FocusNode loginFocusLogin = FocusNode();
 final FocusNode passwordFocusLogin = FocusNode();
 
+/*class ListProductController with ChangeNotifier {
+  //Variáveis utilizadas no Provider
+  int _statusUpload;
+
+  //------------------- Status --------------------
+  //Ataliza o widget do status
+  int get getStatusUpload {
+    return _statusUpload;
+  }
+
+  //Receber o dado do widget
+  changeStatusUpload(int value) {
+    _statusUpload = value;
+    notifyListeners();
+  }
+}*/
+
 //Verificar se o formulario esta completo
 onTapLogin(context) async {
   if (formKeyLogin.currentState.validate()) {

@@ -18,23 +18,25 @@ class NetworkTestConnectivity extends StatelessWidget {
   }
 
   _animatedContainer(context, sizeHeight, text, color) {
-    return AnimatedContainer(
-      width: mediaQuery(context, 1),
-      height: sizeHeight,
-      duration: Duration(milliseconds: 1500),
-      curve: Curves.fastOutSlowIn,
-      child: Container(
+    return Material(
+      child: AnimatedContainer(
         width: mediaQuery(context, 1),
         height: sizeHeight,
-        color: color,
-        alignment: Alignment.center,
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+        duration: Duration(milliseconds: 1500),
+        curve: Curves.fastOutSlowIn,
+        child: Container(
+          width: mediaQuery(context, 1),
+          height: sizeHeight,
+          color: color,
+          alignment: Alignment.center,
+          child: Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
